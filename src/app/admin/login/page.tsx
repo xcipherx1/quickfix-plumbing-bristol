@@ -1,27 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Lock, Mail, Eye, EyeOff, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/use-auth";
+import Link from "next/link";
 
 export default function AdminLogin() {
-  const router = useRouter();
-  const { user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  // Redirect if already logged in
-  if (user) {
-    router.push("/admin/dashboard");
-    return null;
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,33 +32,38 @@ export default function AdminLogin() {
         throw new Error(data.error || "Login failed");
       }
 
-      router.push("/admin/dashboard");
-      router.refresh();
+      // Full page reload to refresh auth state
+      window.location.href = "/admin/dashboard";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left - Dark Background */}
       <div className="hidden md:flex md:w-[60%] bg-[#0F172A] flex-col justify-center items-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          {[...Array(20)].map((_, i) => (
-            <Wrench
-              key={i}
-              className="absolute text-white"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `rotate(${Math.random() * 360}deg)`,
-                width: `${20 + Math.random() * 40}px`,
-                height: `${20 + Math.random() * 40}px`,
-              }}
-            />
-          ))}
+          <Wrench
+            className="absolute text-white"
+            style={{ left: "10%", top: "20%", transform: "rotate(15deg)", width: 40, height: 40 }}
+          />
+          <Wrench
+            className="absolute text-white"
+            style={{ left: "70%", top: "60%", transform: "rotate(140deg)", width: 30, height: 30 }}
+          />
+          <Wrench
+            className="absolute text-white"
+            style={{ left: "40%", top: "80%", transform: "rotate(75deg)", width: 50, height: 50 }}
+          />
+          <Wrench
+            className="absolute text-white"
+            style={{ left: "85%", top: "15%", transform: "rotate(200deg)", width: 25, height: 25 }}
+          />
+          <Wrench
+            className="absolute text-white"
+            style={{ left: "20%", top: "70%", transform: "rotate(300deg)", width: 35, height: 35 }}
+          />
         </div>
         <div className="relative z-10 text-center px-12">
           <span className="text-4xl font-extrabold text-white tracking-tight">
@@ -83,7 +78,6 @@ export default function AdminLogin() {
         </div>
       </div>
 
-      {/* Right - Login Form */}
       <div className="flex-1 flex items-center justify-center bg-[#F8FAFC] p-6">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
@@ -113,7 +107,7 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="pl-10 border-[rgba(15,23,42,0.1)] focus:border-[#06B6D4] focus:ring-[#06B6D4]"
+                className="pl-10"
               />
             </div>
 
@@ -125,7 +119,7 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="pl-10 pr-10 border-[rgba(15,23,42,0.1)] focus:border-[#06B6D4] focus:ring-[#06B6D4]"
+                className="pl-10 pr-10"
               />
               <button
                 type="button"
