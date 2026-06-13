@@ -1,0 +1,15 @@
+export { Hero } from './Hero';
+export { Certifications } from './Certifications';
+export { About } from './About';
+export { Reviews } from './Reviews';
+export { Services } from './Services';
+export { ServiceDetails } from './ServiceDetails';
+export { Projects } from './Projects';
+export { Partners } from './Partners';
+export { WhyChooseUs } from './WhyChooseUs';
+export { Process } from './Process';
+export { WhoWeServe } from './WhoWeServe';
+export { ServiceAreas } from './ServiceAreas';
+export { CTA } from './CTA';
+export { FAQs } from './FAQs';
+export { Footer } from './Footer';
