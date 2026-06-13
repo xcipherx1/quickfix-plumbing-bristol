@@ -39,13 +39,7 @@
   }
 
   * {
-    @apply border-border;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+    border-color: hsl(var(--border));
   }
 }
 
