@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -30,50 +30,20 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user, loading, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Don't block login page - always render it
   const isLoginPage = pathname === "/admin/login";
 
-  // Show loading spinner only on protected pages
-  if (loading && !isLoginPage) {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#06B6D4] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  // On protected pages, if no user, show access denied instead of blank
-  if (!user && !isLoginPage) {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-[#0F172A]/60 mb-4">Please sign in to access the dashboard.</p>
-          <a
-            href="/admin/login"
-            className="inline-flex items-center gap-2 bg-[#06B6D4] text-white px-6 py-3 rounded-xl font-semibold"
-          >
-            Go to Login
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  // Login page renders without dashboard chrome
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  // Protected dashboard pages
   const currentPage =
     navItems.find((n) => n.path === pathname)?.label || "Dashboard";
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -81,7 +51,6 @@ export default function AdminLayout({
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed left-0 top-0 bottom-0 w-[280px] bg-[#0F172A] z-50 transition-transform duration-300 ${
           sidebarOpen
@@ -126,32 +95,38 @@ export default function AdminLayout({
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#06B6D4]/20 flex items-center justify-center">
-              <span className="text-sm font-bold text-[#06B6D4]">
-                {user?.name?.[0] || "?"}
-              </span>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-[#06B6D4]/20 flex items-center justify-center">
+                <span className="text-sm font-bold text-[#06B6D4]">
+                  {user.name[0]}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">
+                  {user.name}
+                </p>
+                <p className="text-xs text-white/40 capitalize">{user.role}</p>
+              </div>
+              <button
+                onClick={logout}
+                className="text-white/40 hover:text-[#EF4444] transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {user?.name || "User"}
-              </p>
-              <p className="text-xs text-white/40 capitalize">
-                {user?.role || "guest"}
-              </p>
-            </div>
-            <button
-              onClick={logout}
-              className="text-white/40 hover:text-[#EF4444] transition-colors"
-              title="Logout"
+          ) : (
+            <Link
+              href="/admin/login"
+              className="flex items-center gap-2 text-white/60 hover:text-white text-sm"
             >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
+              <LogOut className="w-4 h-4" /> Sign In
+            </Link>
+          )}
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="lg:ml-[280px]">
         <header className="h-16 bg-white border-b border-[rgba(15,23,42,0.06)] flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
           <div className="flex items-center gap-3">
@@ -179,11 +154,11 @@ export default function AdminLayout({
             <div className="flex items-center gap-2 ml-2">
               <div className="w-8 h-8 rounded-full bg-[#06B6D4]/20 flex items-center justify-center">
                 <span className="text-xs font-bold text-[#06B6D4]">
-                  {user?.name?.[0] || "?"}
+                  {user ? user.name[0] : "?"}
                 </span>
               </div>
               <span className="text-sm font-medium text-[#0F172A] hidden md:block">
-                {user?.name || "User"}
+                {user ? user.name : "Guest"}
               </span>
             </div>
           </div>
